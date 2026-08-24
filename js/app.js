@@ -61,6 +61,38 @@
     return `${range} AEST`;
   }
 
+  const AEST_DATE_FMT = new Intl.DateTimeFormat("en-AU", {
+    timeZone: DISPLAY_TIMEZONE,
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+  const AEST_TIME_FMT = new Intl.DateTimeFormat("en-AU", {
+    timeZone: DISPLAY_TIMEZONE,
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  // `localISO` is an ISO 8601 datetime with the circuit's local UTC offset
+  // baked in (e.g. "2026-06-07T15:00:00+02:00"), which Date parses as an
+  // exact instant — converting it to AEST is then just formatting that
+  // instant in the Australia/Brisbane timezone.
+  function fmtSessionAEST(localISO) {
+    const instant = new Date(localISO);
+    return `${AEST_DATE_FMT.format(instant)}, ${AEST_TIME_FMT.format(instant)} AEST`;
+  }
+
+  function sessionsHtml(ev) {
+    if (!ev.sessions || !ev.sessions.length) {
+      return `<div class="sessions sessions-tbc">Session times: TBC — not yet published by ${SERIES[ev.series].name}</div>`;
+    }
+    const pills = ev.sessions
+      .map((s) => `<span class="session-pill">${s.label}: ${fmtSessionAEST(s.localISO)}</span>`)
+      .join("");
+    return `<div class="sessions">${pills}</div>`;
+  }
+
   function eventStatus(ev) {
     if (todayISO > ev.end) return "past";
     if (todayISO >= ev.start && todayISO <= ev.end) return "live";
@@ -226,6 +258,7 @@
           <div class="next-up-label">${status === "live" ? "Happening now" : "Next up"} · ${series.name}</div>
           <div class="next-up-title">${ev.name}</div>
           <div class="next-up-sub">${ev.circuit} — ${ev.location} · ${fmtRange(ev.start, ev.end)}</div>
+          ${sessionsHtml(ev)}
         </div>
         <div class="next-up-countdown">${countdownHtml}</div>
       </div>
@@ -281,6 +314,7 @@
               </div>
               <div class="event-name">${ev.name}</div>
               <div class="event-meta">${ev.circuit} — ${ev.location} · ${fmtRange(ev.start, ev.end)}</div>
+              ${status !== "past" ? sessionsHtml(ev) : ""}
             </div>
             <div class="event-side">${sideHtml}</div>
           </article>
@@ -358,6 +392,7 @@
             <div class="event-top-row"><span class="series-badge">${series.short}</span></div>
             <div class="event-name">${e.name}</div>
             <div class="event-meta">${e.circuit} — ${e.location} · ${fmtRange(e.start, e.end)}</div>
+            ${eventStatus(e) !== "past" ? sessionsHtml(e) : ""}
           </div>
         </article>
       `;
