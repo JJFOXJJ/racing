@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Racing Calendar — F1, MotoGP, IMSA, GTWC &amp; Endurance</title>
+  <meta name="description" content="A single calendar for F1, MotoGP, Bathurst 12 Hour, GT World Challenge Europe, IMSA and the Bathurst 1000." />
+  <meta name="theme-color" content="#0b0d12" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🏁%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-flag" aria-hidden="true">🏁</span>
+        <div class="brand-text">
+          <h1>Racing Calendar</h1>
+          <p class="tagline">F1 &middot; MotoGP &middot; Endurance &middot; Supercars</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="next-up" class="next-up" aria-live="polite"></section>
+
+    <section class="controls">
+      <div class="controls-inner">
+        <div class="series-filters" id="series-filters" role="group" aria-label="Filter by series"></div>
+        <div class="view-toggle" role="group" aria-label="Choose view">
+          <button class="view-btn is-active" data-view="list" type="button">List</button>
+          <button class="view-btn" data-view="calendar" type="button">Calendar</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendar-view" class="calendar-view" hidden>
+      <div class="calendar-nav">
+        <button id="cal-prev" class="icon-btn" type="button" aria-label="Previous month">&larr;</button>
+        <h2 id="cal-month-label"></h2>
+        <button id="cal-next" class="icon-btn" type="button" aria-label="Next month">&rarr;</button>
+        <button id="cal-today" class="btn-ghost" type="button">Today</button>
+      </div>
+      <div class="calendar-weekdays" id="cal-weekdays"></div>
+      <div class="calendar-grid" id="cal-grid"></div>
+      <div id="cal-day-detail" class="cal-day-detail" hidden></div>
+    </section>
+
+    <section id="list-view" class="list-view"></section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      Dates reflect officially announced 2026 calendars at time of writing. Motorsport schedules change —
+      always confirm exact times with the official series before travelling.
+    </p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
