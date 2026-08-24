@@ -1,3 +1,6 @@
+# Requires Settings > Pages > Source = "GitHub Actions" (one-time,
+# set manually — the default workflow token can't create the Pages
+# site on its own).
 name: Deploy to GitHub Pages
 
 on:
