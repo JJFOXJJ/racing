@@ -5,6 +5,7 @@
     theme: "racing-cal.theme",
     filters: "racing-cal.filters",
     view: "racing-cal.view",
+    hidePast: "racing-cal.hidePast",
   };
 
   const MONTH_NAMES = [
@@ -13,7 +14,21 @@
   ];
   const WEEKDAY_SHORT = ["S", "M", "T", "W", "T", "F", "S"];
 
-  const todayISO = new Date().toISOString().slice(0, 10);
+  // Australia/Brisbane stays at UTC+10 year-round (no daylight saving), so it
+  // reliably represents AEST rather than drifting into AEDT part of the year.
+  const DISPLAY_TIMEZONE = "Australia/Brisbane";
+
+  function aestTodayISO() {
+    // en-CA formats as YYYY-MM-DD, which is what the rest of the app expects.
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: DISPLAY_TIMEZONE,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+  }
+
+  const todayISO = aestTodayISO();
   const today = parseISO(todayISO);
 
   function parseISO(iso) {
@@ -39,9 +54,11 @@
     const e = parseISO(endISO);
     const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
     const startStr = `${MONTH_NAMES[s.getMonth()]} ${s.getDate()}`;
-    if (startISO === endISO) return `${startStr}, ${s.getFullYear()}`;
-    if (sameMonth) return `${MONTH_NAMES[s.getMonth()]} ${s.getDate()}–${e.getDate()}, ${s.getFullYear()}`;
-    return `${startStr} – ${MONTH_NAMES[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+    let range;
+    if (startISO === endISO) range = `${startStr}, ${s.getFullYear()}`;
+    else if (sameMonth) range = `${MONTH_NAMES[s.getMonth()]} ${s.getDate()}–${e.getDate()}, ${s.getFullYear()}`;
+    else range = `${startStr} – ${MONTH_NAMES[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+    return `${range} AEST`;
   }
 
   function eventStatus(ev) {
@@ -54,6 +71,7 @@
 
   let activeFilters = loadFilters();
   let currentView = localStorage.getItem(STORAGE_KEYS.view) || "list";
+  let hidePast = localStorage.getItem(STORAGE_KEYS.hidePast) === "1";
   let calCursor = new Date(today.getFullYear(), today.getMonth(), 1);
 
   function loadFilters() {
@@ -72,7 +90,11 @@
   }
 
   function visibleEvents() {
-    return RACING_EVENTS.filter((e) => activeFilters.has(e.series));
+    return RACING_EVENTS.filter((e) => {
+      if (!activeFilters.has(e.series)) return false;
+      if (hidePast && eventStatus(e) === "past") return false;
+      return true;
+    });
   }
 
   // ---------------- Theme ----------------
@@ -124,6 +146,35 @@
       wrap.appendChild(btn);
     });
   }
+
+  document.getElementById("filters-all").addEventListener("click", () => {
+    activeFilters = new Set(Object.keys(SERIES));
+    saveFilters();
+    renderFilters();
+    renderAll();
+  });
+
+  document.getElementById("filters-none").addEventListener("click", () => {
+    activeFilters = new Set();
+    saveFilters();
+    renderFilters();
+    renderAll();
+  });
+
+  // ---------------- Hide past events ----------------
+
+  function renderHidePastToggle() {
+    const btn = document.getElementById("hide-past-toggle");
+    btn.classList.toggle("is-active", hidePast);
+    btn.setAttribute("aria-pressed", String(hidePast));
+  }
+
+  document.getElementById("hide-past-toggle").addEventListener("click", () => {
+    hidePast = !hidePast;
+    localStorage.setItem(STORAGE_KEYS.hidePast, hidePast ? "1" : "0");
+    renderHidePastToggle();
+    renderAll();
+  });
 
   // ---------------- View toggle ----------------
 
@@ -340,6 +391,7 @@
   initTheme();
   renderFilters();
   renderViewToggle();
+  renderHidePastToggle();
   renderAll();
 
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", updateThemeIcon);

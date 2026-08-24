@@ -32,10 +32,21 @@
 
     <section class="controls">
       <div class="controls-inner">
-        <div class="series-filters" id="series-filters" role="group" aria-label="Filter by series"></div>
-        <div class="view-toggle" role="group" aria-label="Choose view">
-          <button class="view-btn is-active" data-view="list" type="button">List</button>
-          <button class="view-btn" data-view="calendar" type="button">Calendar</button>
+        <div class="filters-group">
+          <div class="filter-actions">
+            <button id="filters-all" class="btn-ghost" type="button">Select all</button>
+            <button id="filters-none" class="btn-ghost" type="button">Deselect all</button>
+          </div>
+          <div class="series-filters" id="series-filters" role="group" aria-label="Filter by series"></div>
+        </div>
+        <div class="view-group">
+          <button id="hide-past-toggle" class="btn-ghost toggle-btn" type="button" aria-pressed="false">
+            Hide past events
+          </button>
+          <div class="view-toggle" role="group" aria-label="Choose view">
+            <button class="view-btn is-active" data-view="list" type="button">List</button>
+            <button class="view-btn" data-view="calendar" type="button">Calendar</button>
+          </div>
         </div>
       </div>
     </section>
@@ -57,8 +68,9 @@
 
   <footer class="site-footer">
     <p>
-      Dates reflect officially announced 2026 calendars at time of writing. Motorsport schedules change —
-      always confirm exact times with the official series before travelling.
+      All dates are shown in Australian Eastern Standard Time (AEST, UTC+10). Dates reflect officially
+      announced 2026 calendars at time of writing. Motorsport schedules change — always confirm exact
+      times with the official series before travelling.
     </p>
   </footer>
 

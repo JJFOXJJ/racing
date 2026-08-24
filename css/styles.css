@@ -193,10 +193,30 @@ button {
   gap: 12px;
 }
 
+.filters-group,
+.view-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 6px;
+  margin-right: 2px;
+}
+
 .series-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.toggle-btn.is-active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
 }
 
 .chip {
