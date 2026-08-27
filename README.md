@@ -1,14 +1,5 @@
 # Racing Calendar
 
-This repo hosts two independent static sites:
-
-- **[Racing Calendar](#racing-calendar)** (root) — motor racing events.
-- **[Grocery Price Watchlist](grocery/README.md)** (`grocery/`) — tracks a
-  product watchlist across Woolworths, Coles and Aldi, flags sales, and
-  compares basket cost between stores. See `grocery/README.md` for details.
-
-## Racing Calendar
-
 A single, mobile- and desktop-friendly calendar for motor racing events across:
 
 - **Formula 1** — full 2026 season
