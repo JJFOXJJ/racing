@@ -8,6 +8,7 @@ on:
     branches:
       - main
       - claude/racing-events-calendar-ekm3yv
+      - claude/grocery-price-watchlist-40akmx
   workflow_dispatch:
 
 permissions:
